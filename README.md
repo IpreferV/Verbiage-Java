@@ -1,2 +1,5 @@
 # Verbiage-Java
-An issue tracking system concept using java.
+
+In partial fulfillment of the requirements for the course Data Structures and Algorithms.
+
+Issue tracking system concept.
