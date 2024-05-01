@@ -1,4 +1,6 @@
+import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 class Vanity {
     public String text_reset = "\u001B[0m";
@@ -7,11 +9,25 @@ class Vanity {
     public String text_magenta = "\u001B[35m";
     public String text_cyan = "\u001B[36m";
     public String text_black = "\u001B[30m";
+    public String background_black = "\u001B[40m";
+    public String background_white = "\u001B[47m";
+    public String background_yellow = "\u001B[43m";
+    public String background_red = "\u001B[41m";
+    public String background_magenta = "\u001B[45m";
+    public String background_green = "\u001B[42m";
+    public String background_reset = "\u001B[0m";
 
     public void screen_clear() {
         System.out.print("\033[H\033[2J");
     }
-}
+
+    public void dash() {
+        for (int i = 0; i <= 95; ++i) {
+            System.out.print("-");
+        }
+        System.out.println();
+    }
+} 
 class Report {
     protected String platform;
     protected String version;
@@ -19,17 +35,82 @@ class Report {
     protected String description;
     protected String steps;
     protected String status;
+
+    public Report(String platform, String version, String title, String description, String steps, String status) {
+        this.platform = platform;
+        this.version = version;
+        this.title = title;
+        this.description = description;
+        this.steps = steps;
+        this.status = status;
+    }
+}
+class Bug {
+    protected TreeMap<Integer, Report> bug;
+
+    public Bug() {
+        bug = new TreeMap<>();
+    }
+
+    public void bug_add(String platform, String version, String title, String description, String steps, String status) {
+        Report report = new Report(platform, version, title, description, steps, status);
+        bug.put(bug.size() + 1, report);
+    }
+
+    public void bug_display() {
+        Vanity ui = new Vanity();
+        
+        ui.dash();
+        System.out.printf("| %-5s | %-15s | %-12s | %-51s |%n","ID", "Priority", "Platform", "Title");
+        ui.dash();
+
+        for (Map.Entry<Integer, Report> entry : bug.entrySet()) {
+
+            // System.out.printf("| %-5s | %-15s | %-12s | %-51s |%n", entry.getKey(), entry.getValue().status, entry.getValue().platform, entry.getValue().title);
+
+            System.out.printf("| %-5s | %-15s | %-12s | %-51s |%n", entry.getKey(), 
+            ((entry.getValue().status.equals("Pending Review")) ? ui.background_black + ui.text_black + "Pending Review" + ui.background_reset + ui.text_reset : 
+            (entry.getValue().status.equals("Low")) ? ui.background_white + ui.text_black + "Low" + ui.background_reset + ui.text_reset : 
+            (entry.getValue().status.equals("Medium")) ? ui.background_yellow + ui.text_black + "Medium" + ui.background_reset + ui.text_reset : 
+            (entry.getValue().status.equals("High")) ? ui.background_red + ui.text_black + "High" + ui.background_reset + ui.text_reset :
+            (entry.getValue().status.equals("Critical")) ? ui.background_magenta + ui.text_black + "Critical" + ui.background_reset + ui.text_reset :
+            (entry.getValue().status.equals("Resolved")) ? ui.background_green + "Resolved" + ui.background_reset : "null"), entry.getValue().platform, entry.getValue().title);
+
+            // System.out.printf("| %-5s ", entry.getKey());
+
+            // switch (entry.getValue().status) {
+            //     case "Pending Review":
+            //     System.out.printf("|" + ui.background_black + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
+            //         break;
+            //     case "Low":
+            //         System.out.printf("|" + ui.background_black + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
+            //             break;
+            //     default:
+            //         break;
+            // }
+
+            // System.out.printf("| %-25s ", ((entry.getValue().status.equals("Pending Review")) ? ui.background_black + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset : 
+            // (entry.getValue().status.equals("Low")) ? ui.background_white + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset : 
+            // (entry.getValue().status.equals("Medium")) ? ui.background_yellow + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset : 
+            // (entry.getValue().status.equals("High")) ? ui.background_red + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset :
+            // (entry.getValue().status.equals("Critical")) ? ui.background_magenta + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset :
+            // (entry.getValue().status.equals("Resolved")) ? ui.background_green + entry.getValue().status + ui.background_reset : "null"));
+            // System.out.printf("| %-12s ", entry.getValue().platform);
+            // System.out.printf("| %-51s |%n", entry.getValue().title);
+        }
+    }
 }
 public class Verbiage {
     public static Scanner vlt = new Scanner(System.in);
     public static Vanity ui = new Vanity();
+    public static Bug report = new Bug();
     private static void welcome_message() {
         ui.screen_clear();
 
         System.out.print("Welcome to " + ui.text_cyan + "Verbiage" + ui.text_reset + "!\n");
     }
     private static void main_menu() {
-        System.out.println(ui.text_blue + "\n1. Report a Bug" + ui.text_green + " | 2. See Existing Bugs" + ui.text_magenta + " | 3. Manage Bugs" + ui.text_reset + " | 4. Read Manual");
+        System.out.println(ui.text_blue + "\n1. Report a Bug" + ui.text_green + " | 2. See Existing Bugs" + ui.text_magenta + " | 3. Manage Bugs (Login as a Developer)" + ui.text_reset + " | 4. Read Manual");
 
         System.out.print("Select an Operation: \n-> ");
         int choice_menu = vlt.nextInt();
@@ -75,11 +156,10 @@ public class Verbiage {
     private static void bug_report_write() {
         ui.screen_clear();
 
-        System.out.print("What platform are you on?" + ui.text_black + " (1. Android | 2. Windows | 3. iOS | 4. Mac)" + "\n-> " + ui.text_reset);
-        vlt.nextLine();
+        System.out.print("1. What platform are you on?" + ui.text_black + " (1. Android | 2. Windows | 3. iOS | 4. Mac)" + "\n-> " + ui.text_reset);
         int choice_write = vlt.nextInt();
 
-        String platform;
+        String platform = "null";
         switch (choice_write) {
             case 1:
                 platform = "Android";
@@ -88,28 +168,28 @@ public class Verbiage {
                 platform = "Windows";
                 break;
             case 3:
-                platform = "iOs";
+                platform = "iOS";
                 break;
             case 4:
                 platform = "Mac";
                 break;
             default:
-                platform = "Select";
+                bug_report_write();;
                 break;
         }
 
-        System.out.print(ui.text_black + "What is the version of the application you are using? \n-> " + ui.text_reset);
+        System.out.print("2. What is the version of the application you are using?" + ui.text_black + " (App version can be found on the settings of the app) \n-> " + ui.text_reset);
         String version = vlt.next();
 
-        System.out.print(ui.text_black + "What is the issue or the problem? \n-> " + ui.text_reset);
+        System.out.print(ui.text_black + "3. What is the bug about?\n-> " + ui.text_reset);
         vlt.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        String title = vlt.nextLine();
+
+        System.out.print(ui.text_black + "4. What is the issue or the problem? \n-> " + ui.text_reset);
         String description = vlt.nextLine();
 
-        System.out.print(ui.text_black + "How can this bug be recreated? \n-> " + ui.text_reset);
+        System.out.print(ui.text_black + "5. How can this bug be recreated? \n-> " + ui.text_reset);
         String steps = vlt.nextLine();
-
-        System.out.print(ui.text_black + "How would you summarize this bug as its title? \n-> " + ui.text_reset);
-        String title = vlt.nextLine();
 
         bug_report_review(platform, version, title, description, steps);
     }
@@ -124,11 +204,13 @@ public class Verbiage {
         System.out.println(ui.text_black + "Description: " + ui.text_reset + description);
         System.out.println(ui.text_black + "Steps: " + ui.text_reset + steps);
 
+        String status = "Pending Review";
+
         System.out.print(ui.text_black + "\n1. Yes (Submit) | 2. No (Disregard the report)" + ui.text_reset + " -> ");
         int choice_review = vlt.nextInt();
         switch (choice_review) {
             case 1:
-                //NEW OBJECT FOR THE HASHMAP
+                bug_report_confirm(platform, version, title, description, steps, status);
                 break;
             case 2:
                 bug_report();
@@ -138,8 +220,45 @@ public class Verbiage {
                 break;
         }
     }
+    private static void bug_report_confirm(String platform, String version, String title, String description, String steps, String status) {
+        report.bug_add(platform, version, title, description, steps, status);
+
+        System.out.println(ui.text_green + "\nReport successfully published." + ui.text_reset);
+
+        System.out.print(ui.text_black + "\nPress 1 to return to Menu | 2 to Bug Lists\n-> " + ui.text_reset);
+        int choice_confirm = vlt.nextInt();
+        switch (choice_confirm) {
+            case 1:
+                main_menu();
+                break;
+            default:
+                bug_report_confirm(platform, version, title, description, steps, status);
+                break;
+        }
+    }
     private static void bug_list() {
         ui.screen_clear();
+
+        report.bug_display();
+
+        System.out.print(ui.text_black + "\n1. See Report | 2. Back to Menu \n-> " + ui.text_reset);
+        int choice_list = vlt.nextInt();
+
+        switch (choice_list) {
+            case 1:
+                bug_view();
+                break;
+            case 2:
+                ui.screen_clear();
+                main_menu();
+                break;
+            default:
+                bug_view();
+                break;
+        }
+    }
+    private static void bug_view() {
+        //specific bug ID info is here
     }
     private static void bug_manage() {
         ui.screen_clear();
@@ -167,13 +286,14 @@ public class Verbiage {
 
         System.out.println(ui.text_black + "1. Update report status\n2. Read a report\n3. Delete a report" + ui.text_reset);
 
-        System.out.println();
+        System.out.println("\nAbove operations will be based on the ID of the report.");
 
         System.out.print(ui.text_black + "Proceed to Menu? (1. Yes) \n-> " + ui.text_reset);
         int choice_manual = vlt.nextInt();
 
         switch (choice_manual) {
             case 1:
+                ui.screen_clear();
                 main_menu();
                 break;
             default:
@@ -182,9 +302,15 @@ public class Verbiage {
         }
     }
     public static void main (String[] args) {
+
+        report.bug_add("Android", "1", "Title 1", "1", "1", "Pending Review");
+        report.bug_add(null, null, null, null, null, "Low");
+        report.bug_add(null, null, null, null, null, "Medium");
+        report.bug_add(null, null, null, null, null, "High");
+        report.bug_add(null, null, null, null, null, "Critical");
+        report.bug_add(null, null, null, null, null, "Resolved");
+        
         welcome_message();
         main_menu();
-
-        //pending review, minor, critical, resolved
     }
 }
