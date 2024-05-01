@@ -61,42 +61,34 @@ class Bug {
         Vanity ui = new Vanity();
         
         ui.dash();
-        System.out.printf("| %-5s | %-15s | %-12s | %-51s |%n","ID", "Priority", "Platform", "Title");
+        System.out.printf("| %-3s | %-15s | %-12s | %-51s |%n","ID", "Priority", "Platform", "Title");
         ui.dash();
 
         for (Map.Entry<Integer, Report> entry : bug.entrySet()) {
+            System.out.printf("| %3s ", entry.getKey());
 
-            // System.out.printf("| %-5s | %-15s | %-12s | %-51s |%n", entry.getKey(), entry.getValue().status, entry.getValue().platform, entry.getValue().title);
-
-            System.out.printf("| %-5s | %-15s | %-12s | %-51s |%n", entry.getKey(), 
-            ((entry.getValue().status.equals("Pending Review")) ? ui.background_black + ui.text_black + "Pending Review" + ui.background_reset + ui.text_reset : 
-            (entry.getValue().status.equals("Low")) ? ui.background_white + ui.text_black + "Low" + ui.background_reset + ui.text_reset : 
-            (entry.getValue().status.equals("Medium")) ? ui.background_yellow + ui.text_black + "Medium" + ui.background_reset + ui.text_reset : 
-            (entry.getValue().status.equals("High")) ? ui.background_red + ui.text_black + "High" + ui.background_reset + ui.text_reset :
-            (entry.getValue().status.equals("Critical")) ? ui.background_magenta + ui.text_black + "Critical" + ui.background_reset + ui.text_reset :
-            (entry.getValue().status.equals("Resolved")) ? ui.background_green + "Resolved" + ui.background_reset : "null"), entry.getValue().platform, entry.getValue().title);
-
-            // System.out.printf("| %-5s ", entry.getKey());
-
-            // switch (entry.getValue().status) {
-            //     case "Pending Review":
-            //     System.out.printf("|" + ui.background_black + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
-            //         break;
-            //     case "Low":
-            //         System.out.printf("|" + ui.background_black + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
-            //             break;
-            //     default:
-            //         break;
-            // }
-
-            // System.out.printf("| %-25s ", ((entry.getValue().status.equals("Pending Review")) ? ui.background_black + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset : 
-            // (entry.getValue().status.equals("Low")) ? ui.background_white + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset : 
-            // (entry.getValue().status.equals("Medium")) ? ui.background_yellow + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset : 
-            // (entry.getValue().status.equals("High")) ? ui.background_red + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset :
-            // (entry.getValue().status.equals("Critical")) ? ui.background_magenta + ui.text_black + entry.getValue().status + ui.background_reset + ui.text_reset :
-            // (entry.getValue().status.equals("Resolved")) ? ui.background_green + entry.getValue().status + ui.background_reset : "null"));
-            // System.out.printf("| %-12s ", entry.getValue().platform);
-            // System.out.printf("| %-51s |%n", entry.getValue().title);
+            switch (entry.getValue().status) {
+                case "Pending Review":
+                System.out.printf("|" + ui.background_black + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
+                    break;
+                case "Low":
+                    System.out.printf("|" + ui.background_white + ui.text_black + " %-15s " + ui.background_reset + ui.background_reset + ui.text_reset, entry.getValue().status);
+                    break;
+                case "Medium":
+                    System.out.printf("|" + ui.background_yellow + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
+                    break;
+                case "High":
+                    System.out.printf("|"  + ui.background_red + " %-15s " + ui.background_reset, entry.getValue().status);
+                    break;
+                case "Critical":
+                    System.out.printf("|" + ui.background_magenta + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
+                    break;
+                case "Resolved":
+                    System.out.printf("|" + ui.background_green + ui.text_black + " %-15s " + ui.background_reset + ui.text_reset, entry.getValue().status);
+                default:
+                    break;
+            }
+            System.out.printf("| %-12s | %-51s |%n", entry.getValue().platform, entry.getValue().title);
         }
     }
 }
@@ -220,19 +212,31 @@ public class Verbiage {
                 break;
         }
     }
-    private static void bug_report_confirm(String platform, String version, String title, String description, String steps, String status) {
+    private static void bug_report_submit(String platform, String version, String title, String description, String steps, String status) {
         report.bug_add(platform, version, title, description, steps, status);
-
         System.out.println(ui.text_green + "\nReport successfully published." + ui.text_reset);
+    }
+    private static void bug_report_confirm(String platform, String version, String title, String description, String steps, String status) {
+        System.out.print("\nAre you sure?" + ui.text_black + "\n1. Yes (Publish) | 2. (No, re-write the report) -> " + ui.text_reset);
+        int choice_confirm = vlt.nextInt();
+
+        switch (choice_confirm) {
+            case 1:
+                bug_report_submit(platform, version, title, description, steps, status);
+                break;
+            default:
+                bug_report_write();
+                break;
+        }
 
         System.out.print(ui.text_black + "\nPress 1 to return to Menu | 2 to Bug Lists\n-> " + ui.text_reset);
-        int choice_confirm = vlt.nextInt();
+        choice_confirm = vlt.nextInt();
         switch (choice_confirm) {
             case 1:
                 main_menu();
                 break;
             default:
-                bug_report_confirm(platform, version, title, description, steps, status);
+                bug_list();;
                 break;
         }
     }
