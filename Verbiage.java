@@ -24,7 +24,7 @@ class Vanity {
     }
 
     public void dash() {
-        for (int i = 0; i <= 93; ++i) {
+        for (int i = 0; i <= 104; ++i) {
             System.out.print("-");
         }
         System.out.println();
@@ -94,7 +94,7 @@ class Bug {
 
     public void bug_display() {
         ui.dash();
-        System.out.printf("| %-3s | %-15s | %-12s | %-51s |%n","ID", "Priority", "Platform", "Title");
+        System.out.printf("| %-3s | %-15s | %-12s | %-8s | %-51s |%n","ID", "Priority", "Platform", "Version", "Title");
         ui.dash();
 
         for (Map.Entry<Integer, Report> entry : bug.entrySet()) {
@@ -102,7 +102,7 @@ class Bug {
 
             bug_status(entry);
 
-            System.out.printf("| %-12s | %-51.50s |%n", entry.getValue().platform, entry.getValue().title);
+            System.out.printf("| %-12s | %-8s | %-51.50s |%n", entry.getValue().platform, entry.getValue().version, entry.getValue().title);
         }
         ui.dash();
     }
@@ -111,7 +111,7 @@ class Bug {
         ui.screen_clear();
 
         ui.dash();
-        System.out.println("Title: " + ui.bg_white + bug.get(id).title + ui.bg_reset);
+        System.out.println("ID: " + bug.ceilingKey(id) + " | Title: " + ui.bg_white + ui.tx_black + bug.get(id).title + ui.bg_reset + ui.tx_reset);
         System.out.println(ui.tx_black + "Description: " + ui.tx_reset + bug.get(id).description);
         System.out.println(ui.tx_black + "\nSteps to Recreate: \n" + ui.tx_reset + bug.get(id).steps);
         ui.dash();
@@ -162,6 +162,36 @@ class Bug {
                 break;
         }
         bug.put(id, update);
+
+        System.out.println("Status successfully updated.");
+
+        System.out.print(ui.tx_black + "Press any number to Manage Bugs -> " + ui.tx_reset);
+        choice_update = vlt.nextInt();
+
+        if (choice_update != 0 || choice_update == 0) {
+            Verbiage.bug_manage();
+        }
+    }
+
+    public void bug_details_delete(int id, Scanner vlt) {
+        System.out.println(ui.tx_red + "Deleting a report." + ui.tx_reset + " Are you sure?");
+        System.out.print(ui.tx_black + "1. Yes | 2. No (Back to List) -> " + ui.tx_reset);
+        int choice_ask = vlt.nextInt();
+
+        switch (choice_ask) {
+            case 1:
+                bug.remove(id);
+                System.out.println("Report successfully removed.");
+                break;
+            case 2:
+                Verbiage.bug_manage();
+                break;
+            default:
+                bug_details_delete(id, vlt);
+                break;
+        }
+
+        Verbiage.bug_manage();
     }
 }
 public class Verbiage {
@@ -170,11 +200,10 @@ public class Verbiage {
     public static Bug report = new Bug();
     private static void welcome_message() {
         ui.screen_clear();
-
         System.out.print("Welcome to " + ui.tx_cyan + "Verbiage" + ui.tx_reset + "!\n");
     }
     private static void main_menu() {
-        System.out.println(ui.tx_blue + "\n1. Report a Bug" + ui.tx_green + " | 2. See Existing Bugs" + ui.tx_magenta + " | 3. Manage Bugs (Login as a Developer)" + ui.tx_reset + " | 4. Read Manual " + ui.bg_black + "| 5. Exit" + ui.tx_reset);
+        System.out.println(ui.tx_blue + "\n1. Report a Bug" + ui.tx_green + " | 2. See Existing Bugs" + ui.tx_magenta + " | 3. Manage Bugs (Login as a Developer)" + ui.tx_reset + " | 4. Read Manual " + ui.tx_black + "| 5. Exit" + ui.tx_reset);
 
         System.out.print("Select an Operation: \n-> ");
         int choice_menu = vlt.nextInt();
@@ -329,7 +358,7 @@ public class Verbiage {
 
         report.bug_display();
 
-        System.out.print(ui.tx_black + "\n1. Back to Report | 2. See Report \n-> " + ui.tx_reset);
+        System.out.print(ui.tx_black + "\n1. Back to Menu | 2. See Report \n-> " + ui.tx_reset);
         int choice_list = vlt.nextInt();
 
         switch (choice_list) {
@@ -396,18 +425,18 @@ public class Verbiage {
             } else if (username.equals("0")) {
                 main_menu();
             } else {
-                System.out.println(ui.tx_red + "Invalid credentials." + ui.tx_reset);
+                bug_manage_login();
             }
         } while (!(username.equals(username) && password.equals(password)));
     }
-    private static void bug_manage() {
+    protected static void bug_manage() {
         ui.screen_clear();
 
         System.out.println(ui.tx_green + "Welcome! " + ui.tx_reset + "Here are all of the reported bugs as of the moment.");
 
         report.bug_display();
 
-        System.out.print(ui.tx_black + "\n1. See Report | 2. Update Status | 3. Delete Report | 4. Exit \n-> " + ui.tx_reset);
+        System.out.print(ui.tx_black + "\n1. See Report & Manage Report | 2. Logout \n-> " + ui.tx_reset);
         int choice_manage = vlt.nextInt();
 
         switch (choice_manage) {
@@ -415,20 +444,14 @@ public class Verbiage {
                 bug_manage_details(0);
                 break;
             case 2:
-
-                break;
-            case 3:
-
-                break;
-            case 4:
-
+                main_menu();
                 break;
             default:
                 bug_manage();
                 break;
         }
     }
-    private static void bug_manage_details(int id) {
+    protected static void bug_manage_details(int id) {
         id = bug_details_display();
 
 
@@ -439,8 +462,14 @@ public class Verbiage {
             case 1:
                 report.bug_details_update(id, vlt);
                 break;
-        
+            case 2:
+                report.bug_details_delete(id, vlt);
+                break;
+            case 3:
+                bug_manage();
+                break;
             default:
+                bug_manage_details(id);
                 break;
         }
     }
@@ -480,15 +509,15 @@ public class Verbiage {
         }
     }
     public static void main (String[] args) {
+        // Draft Data
+        report.bug_add("Android", "v0.1a", "Duplicate Reports Upon Submission", "When submitting reports, the submission gets duplicated when it should not.", "1. File a report. 2. Submit the report. 3. See the duplicated report.", "Resolved");
+        report.bug_add("Mac", "v0.2a", "Cannot Login with Proper Credentials", "I am locked out of my account.", "Try to login, nothing will happen", "High");
+        report.bug_add("iOS", "v0.2a", "Crash Upon Startup", "Opening the program exits instantly.", "Open the application", "Critical");
+        report.bug_add("Windows", "v0.2a", "Table is one pixel off", "The table is lacking one space in the See Reports tab.", "Start the app and see the reports.", "Low");
+        report.bug_add("Android", "v0.3a", "User inputs have no validation", "There are cases when a number is required, a user can input a text and the program will accept it.", "Open a part of the program then try putting a character instead of a number.", "Medium");
+        report.bug_add("Windows", "v0.3a", "Working as Intended Test", "TESTING WaI", "none", "WAI");
+        report.bug_add("Android", "v0.3a", "Invalid user inputs crashes the program", "The program ends unexpectedly when a wrong input is entered.", "Open a part of the program then put a character when a number is asked.", "Pending Review");
 
-        report.bug_add("Android", "v1.0a", "Title 1", "Description 1", "1", "Pending Review");
-        report.bug_add("Windows", "v1.1a", "Title 2", "Description 2", null, "Low");
-        report.bug_add(null, null, null, null, null, "Medium");
-        report.bug_add(null, null, null, null, null, "High");
-        report.bug_add(null, null, null, null, null, "Critical");
-        report.bug_add(null, null, null, null, null, "Resolved");
-        report.bug_add("Windows", "v1.2a", "WaI Test", "TESTING WaI", "none", "WAI");
-        
         welcome_message();
         main_menu();
     }
