@@ -1,15 +1,16 @@
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.TreeMap;
 
 class Vanity {
     public String tx_reset = "\u001B[0m";
     public String tx_green = "\u001B[32m";
+    public String tx_red = "\u001B[31m";
     public String tx_blue = "\u001B[34m";
     public String tx_magenta = "\u001B[35m";
     public String tx_cyan = "\u001B[36m";
     public String tx_black = "\u001B[30m";
+    public String tx_white = "\u001B[37m";
     public String bg_black = "\u001B[40m";
     public String bg_white = "\u001B[47m";
     public String bg_yellow = "\u001B[43m";
@@ -66,22 +67,26 @@ class Bug {
     public void bug_status(Map.Entry<Integer, Report> level) {
         switch (level.getValue().status) {
             case "Pending Review":
-            System.out.printf("|" + ui.bg_black + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
+            System.out.printf(ui.bg_black + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
                 break;
             case "Low":
-                System.out.printf("|" + ui.bg_white + ui.tx_black + " %-15s " + ui.bg_reset + ui.bg_reset + ui.tx_reset, level.getValue().status);
+                System.out.printf(ui.bg_white + ui.tx_black + " %-15s " + ui.bg_reset + ui.bg_reset + ui.tx_reset, level.getValue().status);
                 break;
             case "Medium":
-                System.out.printf("|" + ui.bg_yellow + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
+                System.out.printf(ui.bg_yellow + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
                 break;
             case "High":
-                System.out.printf("|"  + ui.bg_red + " %-15s " + ui.bg_reset, level.getValue().status);
+                System.out.printf(ui.bg_red + " %-15s " + ui.bg_reset, level.getValue().status);
                 break;
             case "Critical":
-                System.out.printf("|" + ui.bg_magenta + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
+                System.out.printf(ui.bg_magenta + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
                 break;
             case "Resolved":
-                System.out.printf("|" + ui.bg_green + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
+                System.out.printf(ui.bg_green + ui.tx_black + " %-15s " + ui.bg_reset + ui.tx_reset, level.getValue().status);
+                break;
+            case "WAI":
+                System.out.printf(" %-15s ", level.getValue().status);
+                break;
             default:
                 break;
         }
@@ -93,21 +98,22 @@ class Bug {
         ui.dash();
 
         for (Map.Entry<Integer, Report> entry : bug.entrySet()) {
-            System.out.printf("| %3s ", entry.getKey());
+            System.out.printf("| %3s |", entry.getKey());
 
             bug_status(entry);
 
             System.out.printf("| %-12s | %-51.50s |%n", entry.getValue().platform, entry.getValue().title);
         }
+        ui.dash();
     }
 
-    public void bug_details(int id) {
+    public int bug_details(int id) {
         ui.screen_clear();
 
         ui.dash();
-        System.out.println("Title: " + bug.get(id).title);
-        System.out.println("Description: " + bug.get(id).description);
-        System.out.println("\nSteps to Recreate: \n" + bug.get(id).steps);
+        System.out.println("Title: " + ui.bg_white + bug.get(id).title + ui.bg_reset);
+        System.out.println(ui.tx_black + "Description: " + ui.tx_reset + bug.get(id).description);
+        System.out.println(ui.tx_black + "\nSteps to Recreate: \n" + ui.tx_reset + bug.get(id).steps);
         ui.dash();
         System.out.println("Platform: " + bug.get(id).platform);
         System.out.println("Version: " + bug.get(id).version);
@@ -118,6 +124,44 @@ class Bug {
                 bug_status(detail);
             }
         }
+
+        return id;
+    }
+
+    public void bug_details_update(int id, Scanner vlt) {
+        System.out.println("What is the new priority level of this report?");
+        System.out.print(ui.tx_black + "1. Pending Review | 2. Low | 3. Medium | 4. High | 5. Critical | 6. Resolved | 7. Working As Intended\n-> " + ui.tx_reset);
+        int choice_update = vlt.nextInt();
+
+        Report update = bug.get(id);
+
+        switch (choice_update) {
+            case 1:
+                update.status = "Pending Review";
+                break;
+            case 2:
+                update.status = "Low";
+                break;
+            case 3: 
+                update.status = "Medium";
+                break;
+            case 4:
+                update.status = "High";
+                break;
+            case 5:
+                update.status = "Critical";
+                break;
+            case 6: 
+                update.status = "Resolved";
+                break;
+            case 7: 
+                update.status = "WAI";
+                break;
+            default:
+                bug_details_update(id, vlt);
+                break;
+        }
+        bug.put(id, update);
     }
 }
 public class Verbiage {
@@ -130,7 +174,7 @@ public class Verbiage {
         System.out.print("Welcome to " + ui.tx_cyan + "Verbiage" + ui.tx_reset + "!\n");
     }
     private static void main_menu() {
-        System.out.println(ui.tx_blue + "\n1. Report a Bug" + ui.tx_green + " | 2. See Existing Bugs" + ui.tx_magenta + " | 3. Manage Bugs (Login as a Developer)" + ui.tx_reset + " | 4. Read Manual");
+        System.out.println(ui.tx_blue + "\n1. Report a Bug" + ui.tx_green + " | 2. See Existing Bugs" + ui.tx_magenta + " | 3. Manage Bugs (Login as a Developer)" + ui.tx_reset + " | 4. Read Manual " + ui.bg_black + "| 5. Exit" + ui.tx_reset);
 
         System.out.print("Select an Operation: \n-> ");
         int choice_menu = vlt.nextInt();
@@ -143,10 +187,13 @@ public class Verbiage {
                 bug_list();
                 break;
             case 3:
-                bug_manage();
+                bug_manage_login();
                 break;
             case 4:
                 bug_manual();
+                break;
+            case 5:
+                System.exit(0);
                 break;
             default:
                 main_menu();
@@ -194,7 +241,7 @@ public class Verbiage {
                 platform = "Mac";
                 break;
             default:
-                bug_report_write();;
+                bug_report_write();
                 break;
         }
 
@@ -282,23 +329,23 @@ public class Verbiage {
 
         report.bug_display();
 
-        System.out.print(ui.tx_black + "\n1. See Report | 2. Back to Menu \n-> " + ui.tx_reset);
+        System.out.print(ui.tx_black + "\n1. Back to Report | 2. See Report \n-> " + ui.tx_reset);
         int choice_list = vlt.nextInt();
 
         switch (choice_list) {
             case 1:
-                bug_report_details();
-                break;
-            case 2:
                 ui.screen_clear();
                 main_menu();
+                break;
+            case 2:
+                bug_report_details();
                 break;
             default:
                 bug_list();
                 break;
         }
     }
-    private static void bug_report_details() {
+    private static int bug_details_display() {
         int id;
         do {
             System.out.print("\nEnter the ID to see details -> ");
@@ -310,12 +357,92 @@ public class Verbiage {
             }
         } while (!report.contains_key(id));
 
-        System.out.println(ui.tx_black + "\n\nBack to List | Back to Menu" + ui.tx_reset);
+        return id;
+    }
+    private static void bug_report_details() {
+        bug_details_display();
 
+        System.out.print(ui.tx_black + "\n\n1. Back to Menu | 2. Back to List -> " + ui.tx_reset);
+        int choice_details = vlt.nextInt();
 
+        switch (choice_details) {
+            case 1:
+                main_menu();
+                break;
+            case 2:
+                bug_list();
+                break;
+            default:
+                bug_report_details();
+                break;
+        }
+
+    }
+    private static void bug_manage_login() {
+        ui.screen_clear();
+
+        System.out.println("To manage bugs, you must login.");
+        System.out.println(ui.tx_black + "Enter 0 for both to return to menu.\n" + ui.tx_reset);
+
+        System.out.print("Username: ");
+        vlt.skip("(\r\n|[\n\r\u2028\u2029\u0085])?");
+        String username = vlt.nextLine();
+        System.out.print("Password: ");
+        String password = vlt.next();
+        
+        do {
+            if (username.equals("Vault Air") && password.equals("0000")) {
+                bug_manage();
+            } else if (username.equals("0")) {
+                main_menu();
+            } else {
+                System.out.println(ui.tx_red + "Invalid credentials." + ui.tx_reset);
+            }
+        } while (!(username.equals(username) && password.equals(password)));
     }
     private static void bug_manage() {
         ui.screen_clear();
+
+        System.out.println(ui.tx_green + "Welcome! " + ui.tx_reset + "Here are all of the reported bugs as of the moment.");
+
+        report.bug_display();
+
+        System.out.print(ui.tx_black + "\n1. See Report | 2. Update Status | 3. Delete Report | 4. Exit \n-> " + ui.tx_reset);
+        int choice_manage = vlt.nextInt();
+
+        switch (choice_manage) {
+            case 1:
+                bug_manage_details(0);
+                break;
+            case 2:
+
+                break;
+            case 3:
+
+                break;
+            case 4:
+
+                break;
+            default:
+                bug_manage();
+                break;
+        }
+    }
+    private static void bug_manage_details(int id) {
+        id = bug_details_display();
+
+
+        System.out.print(ui.tx_black + "\n1. Update Status | 2. Delete Report | 3. Return to List\n-> " + ui.tx_reset);
+        int choice = vlt.nextInt();
+
+        switch (choice) {
+            case 1:
+                report.bug_details_update(id, vlt);
+                break;
+        
+            default:
+                break;
+        }
     }
     private static void bug_manual() {
         ui.screen_clear();
@@ -338,7 +465,7 @@ public class Verbiage {
 
         System.out.println("\nSpecific operations may be done by the developer.");
 
-        System.out.println(ui.tx_black + "1. Update report status\n2. Read a report\n3. Delete a report" + ui.tx_reset);
+        System.out.println(ui.tx_black + "Update status, Read a report, Delete a report" + ui.tx_reset);
 
         System.out.println("\nAbove operations will be based on the ID of the report.");
 
@@ -360,6 +487,7 @@ public class Verbiage {
         report.bug_add(null, null, null, null, null, "High");
         report.bug_add(null, null, null, null, null, "Critical");
         report.bug_add(null, null, null, null, null, "Resolved");
+        report.bug_add("Windows", "v1.2a", "WaI Test", "TESTING WaI", "none", "WAI");
         
         welcome_message();
         main_menu();
