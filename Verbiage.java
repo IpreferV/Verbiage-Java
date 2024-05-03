@@ -487,7 +487,7 @@ public class Verbiage {
 
         System.out.println("The Developer POV is similar to the Reporter POV, but with elevated permissions.\nUpon selecting 3, the user will be prompted with a password login before being permitted system access.\n");
 
-        System.out.println("table form here");
+        report.bug_display();
 
         System.out.println("\nSpecific operations may be done by the developer.");
 
