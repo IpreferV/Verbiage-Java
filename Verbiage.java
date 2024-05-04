@@ -163,14 +163,9 @@ class Bug {
         System.out.println("Status successfully updated.");
 
         System.out.print(ui.tx_cyan + "Press any number to Manage Bugs -> " + ui.bg_tx_reset);
-        choice_update = vlt.nextInt();
+        vlt.nextInt();
 
-
-        if (choice_update == 1) {
-            Verbiage.bug_manage();
-        } else {
-            Verbiage.bug_manage();
-        }
+        Verbiage.bug_manage();
     }
 
     public void bug_details_delete(int id, Scanner vlt) {
@@ -450,7 +445,6 @@ public class Verbiage {
     }
     protected static void bug_manage_details(int id) {
         id = bug_details_display();
-
 
         System.out.print(ui.tx_cyan + "\n1. Update Status | 2. Delete Report | 3. Return to List\n-> " + ui.bg_tx_reset);
         int choice = vlt.nextInt();
