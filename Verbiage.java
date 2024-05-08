@@ -49,6 +49,7 @@ class Report {
 class Bug {
     Vanity ui = new Vanity();
     protected TreeMap<Integer, Report> bug;
+    protected int id;
 
     public Bug() {
         bug = new TreeMap<>();
@@ -60,7 +61,7 @@ class Bug {
 
     public void bug_add(String platform, String version, String title, String description, String steps, String status) {
         Report report = new Report(platform, version, title, description, steps, status);
-        bug.put(bug.size() + 1, report);
+        bug.put(++id, report);
     }
     
     public void bug_status(Map.Entry<Integer, Report> level) {
