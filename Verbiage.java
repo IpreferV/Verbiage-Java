@@ -489,7 +489,7 @@ public class Verbiage {
         ui.dash();
         System.out.printf("| %-3s | %-15s | %-12s | %-8s | %-51s |%n","ID", "Priority", "Platform", "Version", "Title");
         ui.dash();
-        System.out.printf("| %-3s |" + ui.bg_white + " %-15s " + ui.bg_tx_reset +"| %-12s | %-8s | %-51.50s |%n", "1","Low", "Windows", "v1.0a", "Bug Report Example");
+        System.out.printf("| %-3s |" + ui.bg_white + " %-15s " + ui.bg_tx_reset + "| %-12s | %-8s | %-51.50s |%n", "1","Low", "Windows", "v1.0a", "Bug Report Example");
         ui.dash();
 
         System.out.println("\nSpecific operations may be done by the developer.");
