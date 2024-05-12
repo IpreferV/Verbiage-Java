@@ -159,7 +159,7 @@ class Bug {
                 bug_details_update(id, vlt);
                 break;
         }
-        bug.put(id, update);
+        bug.add(id, update);
 
         System.out.println("Status successfully updated.");
 
@@ -316,7 +316,7 @@ public class Verbiage {
         System.out.println(ui.tx_green + "\nReport successfully submitted!" + ui.bg_tx_reset);
     }
     private static void bug_report_confirm(String platform, String version, String title, String description, String steps, String status) {
-        System.out.print("\nAre you sure?" + ui.tx_cyan + "\n1. Yes (Publish) | 2. (No, re-write the report) -> " + ui.bg_tx_reset);
+        System.out.print("\nAre you sure?" + ui.tx_cyan + "\n1. Yes (Publish) | 2. No (Re-write the report) -> " + ui.bg_tx_reset);
         int choice_confirm = vlt.nextInt();
 
         switch (choice_confirm) {
@@ -531,9 +531,7 @@ public class Verbiage {
         report.bug_add("Windows", "v0.2a", "Table is one pixel off", "The table is lacking one space in the See Reports tab.", "Start the app and see the reports.", "Low");
         report.bug_add("Android", "v0.3a", "User inputs have no validation", "There are cases when a number is required, a user can input a text and the program will accept it.", "Open a part of the program then try putting a character instead of a number.", "Medium");
         report.bug_add("Windows", "v0.3a", "Working as Intended Test", "TESTING WaI", "none", "WAI");
-        report.bug_add("Android", "v0.3a", "Invalid user inputs crashes the program", "The program ends unexpectedly when a wrong input is entered.", "Open a part of the program then put a character when a number is asked.", "Pending Review");                                                                                
-
-
+        report.bug_add("Android", "v0.3a", "Invalid user inputs crashes the program", "The program ends unexpectedly when a wrong input is entered.", "Open a part of the program then put a character when a number is asked.", "Pending Review");                                                                            
         roach();
         welcome_message();
         main_menu();
