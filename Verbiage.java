@@ -159,7 +159,7 @@ class Bug {
                 bug_details_update(id, vlt);
                 break;
         }
-        bug.add(id, update);
+        bug.put(id, update);
 
         System.out.println("Status successfully updated.");
 
