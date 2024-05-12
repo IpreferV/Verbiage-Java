@@ -471,6 +471,7 @@ public class Verbiage {
     private static void bug_manual() {
         ui.screen_clear();
 
+        ui.dash();
         System.out.println(ui.tx_cyan + "Verbiage Manual\n" + ui.bg_tx_reset);
 
         System.out.println(ui.tx_cyan + "Verbiage" + ui.bg_tx_reset + ", an issue tracking system for developers.\n");
