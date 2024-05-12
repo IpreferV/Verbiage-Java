@@ -23,8 +23,11 @@ class Vanity {
     }
 
     public void dash() {
-        for (int i = 0; i <= 104; ++i) {
-            System.out.print("-");
+        for (int i = 0; i <= 52; ++i) {
+            System.out.print("=");
+            if (i != 52) {
+                System.out.print("-");
+            }
         }
         System.out.println();
     }
@@ -476,13 +479,18 @@ public class Verbiage {
 
         System.out.println("How it works: " + ui.tx_magenta + "Reporter POV" + ui.bg_tx_reset);
 
-        System.out.println("Upon welcome screen, select 1 to write a report, or 2 to see the list of bugs. \nUpon selecting 1, the user will be asked a series of questions. Answer accordingly. \nAfterwards, a confirmation message will be prompted whether to publish the report or disregard.\n");
+        System.out.println("Upon welcome screen, select 1 to write a report, or 2 to see the list of bugs. \nUpon selecting 1, the user will be asked a series of questions. Afterwards, a confirmation message will be prompted whether to publish the report or disregard.\n");
 
         System.out.println("How it works: " + ui.tx_blue + "Developer POV" + ui.bg_tx_reset);
 
         System.out.println("The Developer POV is similar to the Reporter POV, but with elevated permissions.\nUpon selecting 3, the user will be prompted with a password login before being permitted system access.\n");
 
-        report.bug_display();
+        System.out.println("List of Reported Bugs Example:");
+        ui.dash();
+        System.out.printf("| %-3s | %-15s | %-12s | %-8s | %-51s |%n","ID", "Priority", "Platform", "Version", "Title");
+        ui.dash();
+        System.out.printf("| %-3s |" + ui.bg_white + " %-15s " + ui.bg_tx_reset +"| %-12s | %-8s | %-51.50s |%n", "1","Low", "Windows", "v1.0a", "Bug Report Example");
+        ui.dash();
 
         System.out.println("\nSpecific operations may be done by the developer.");
 
