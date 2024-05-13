@@ -114,8 +114,11 @@ class Bug {
         ui.screen_clear();
 
         ui.dash();
-        System.out.println("ID: " + bug.ceilingKey(id) + " | Title: " + ui.bg_white + bug.get(id).title + ui.bg_tx_reset);
-        System.out.println(ui.tx_cyan + "Description: " + ui.bg_tx_reset + bug.get(id).description);
+        System.out.print("ID: " + bug.ceilingKey(id));
+        String format = " %-" + Integer.toString(bug.get(id).title.length()) + "s ";
+        System.out.print(" | Title: ");
+        System.out.printf(ui.bg_white + format + ui.bg_tx_reset, bug.get(id).title);
+        System.out.println(ui.tx_cyan + "\nDescription: " + ui.bg_tx_reset + bug.get(id).description);
         System.out.println(ui.tx_cyan + "\nSteps to Recreate: \n" + ui.bg_tx_reset + bug.get(id).steps);
         ui.dash();
         System.out.println("Platform: " + bug.get(id).platform);
