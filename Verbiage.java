@@ -1,6 +1,6 @@
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeMap;
 
 class Vanity {
     // colors matched with IntelliJ IDEA Terminal's default theme
@@ -51,11 +51,11 @@ class Report {
 }
 class Bug {
     Vanity ui = new Vanity();
-    protected TreeMap<Integer, Report> bug;
+    protected HashMap<Integer, Report> bug;
     protected int id;
 
     public Bug() {
-        bug = new TreeMap<>();
+        bug = new HashMap<>();
     }
 
     public boolean contains_key(int id) {
@@ -114,7 +114,7 @@ class Bug {
         ui.screen_clear();
 
         ui.dash();
-        System.out.print("ID: " + bug.ceilingKey(id));
+        System.out.print("ID: " + id);
         String format = " %-" + Integer.toString(bug.get(id).title.length()) + "s ";
         System.out.print(" | Title: ");
         System.out.printf(ui.bg_white + format + ui.bg_tx_reset, bug.get(id).title);
