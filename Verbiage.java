@@ -201,7 +201,8 @@ public class Verbiage {
         System.out.println("\nWelcome to " + ui.tx_cyan + "Verbiage" + ui.bg_tx_reset + "!");
     }
     private static void main_menu() {
-        System.out.println(ui.tx_blue + "\n1. Report a Bug" + ui.tx_green + " | 2. See Existing Bugs" + ui.tx_magenta + " | 3. Manage Bugs (Login as a Developer)" + ui.bg_tx_reset + " | 4. Read Manual " + "| 5. Exit");
+        ui.dash();
+        System.out.println(ui.tx_blue + "1. Report a Bug" + ui.tx_green + " | 2. See Existing Bugs" + ui.tx_magenta + " | 3. Manage Bugs (Login as a Developer)" + ui.bg_tx_reset + " | 4. Read Manual " + "| 5. Exit");
 
         System.out.print("Select an Operation: \n-> ");
         int choice_menu = vlt.nextInt();
@@ -230,6 +231,8 @@ public class Verbiage {
     private static void bug_report() {
         ui.screen_clear();
 
+        ui.dash();
+
         System.out.println("You want to report a bug. Is that correct?\n" + ui.tx_green + "1. Yes (Proceed) | " + ui.tx_magenta + "2. No (Back to Menu)" + ui.bg_tx_reset);
 
         System.out.print("Select an Operation:\n-> ");
@@ -249,6 +252,8 @@ public class Verbiage {
     }
     private static void bug_report_write() {
         ui.screen_clear();
+
+        ui.dash();
 
         System.out.print("1. What platform are you on?" + ui.tx_cyan + " (1. Android | 2. Windows | 3. iOS | 4. Mac)" + "\n-> " + ui.bg_tx_reset);
         int choice_write = vlt.nextInt();
@@ -289,6 +294,8 @@ public class Verbiage {
     }
     private static void bug_report_review(String platform, String version, String title, String description, String steps) {
         ui.screen_clear();
+
+        ui.dash();
 
         System.out.println("Are these information correct?\n");
 
@@ -407,6 +414,8 @@ public class Verbiage {
     }
     private static void bug_manage_login() {
         ui.screen_clear();
+
+        ui.dash();
 
         System.out.println("To manage bugs, you must login.");
         System.out.println(ui.tx_cyan + "Enter 0 to return to menu.\n" + ui.bg_tx_reset);
