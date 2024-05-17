@@ -105,7 +105,7 @@ class Bug {
 
             bug_status(entry);
 
-            System.out.printf("| %-12s | %-8s | %-51.50s |%n", entry.getValue().platform, entry.getValue().version, entry.getValue().title);
+            System.out.printf("| %-12s | %-8.8s | %-51.50s |%n", entry.getValue().platform, entry.getValue().version, entry.getValue().title);
         }
         ui.dash();
     }
